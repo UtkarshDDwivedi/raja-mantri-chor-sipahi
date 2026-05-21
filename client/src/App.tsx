@@ -1,4 +1,5 @@
 import Navbar from "./components/Navbar";
+import Banner from "./assets/banner.svg?react"
 import { Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
@@ -8,6 +9,7 @@ function App() {
   return (
     <div className="min-h-screen">
       <Navbar />
+      <Banner className="md:h-80" />
 
       <Routes>
         <Route path="/" element={<Home />} />

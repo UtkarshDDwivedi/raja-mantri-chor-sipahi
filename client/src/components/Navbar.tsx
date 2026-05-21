@@ -1,5 +1,11 @@
-import { useRef, useState, type Dispatch, type SetStateAction } from "react";
-import { motion } from "motion/react";
+import {
+	useRef,
+	useState,
+	type Dispatch,
+	type ReactNode,
+	type SetStateAction,
+} from "react";
+import { easeInOut, motion } from "motion/react";
 import { Link } from "react-router-dom";
 
 type Position = {
@@ -16,14 +22,14 @@ export default function Navbar() {
 	});
 
 	return (
-		<nav className="relative min-w-screen flex justify-center p-4">
-			<ul className="flex justify-center items-center rounded-full border-2 w-fit bg-white px-1">
-				<Tab setPosition={setPosition} text="Home" path="/" />
-				<Tab
-					setPosition={setPosition}
-					text="How to Play?"
-					path="/how-to-play"
-				/>
+		<nav className="relative min-w-screen flex justify-center p-4 font-primary">
+			<ul className="flex justify-center items-center rounded-full border-3 w-fit bg-[#FFF7E8] px-1">
+				<Tab setPosition={setPosition} path="/">
+					Home
+				</Tab>
+				<Tab setPosition={setPosition} path="/how-to-play">
+					How to Play?
+				</Tab>
 
 				<Cursor position={position} />
 			</ul>
@@ -32,17 +38,18 @@ export default function Navbar() {
 }
 
 function Tab({
-	text,
+	children,
 	setPosition,
 	path,
 }: {
-	text: string;
+	children: ReactNode;
 	setPosition: Dispatch<SetStateAction<Position>>;
 	path: string;
 }) {
 	const ref = useRef<HTMLLIElement>(null);
+	const [color, setColor] = useState('#000000')
 	return (
-		<li
+		<motion.li
 			ref={ref}
 			onMouseEnter={() => {
 				if (!ref.current) return;
@@ -54,17 +61,25 @@ function Tab({
 					opacity: 1,
 					left: ref.current.offsetLeft,
 				});
+
+				setColor('#FFF7EB');
 			}}
 			onMouseLeave={() => {
 				setPosition((p) => ({
 					...p,
 					opacity: 0,
 				}));
+
+				setColor('#000000');
 			}}
-			className="relative z-10 block cursor-pointer text-white mix-blend-difference text-xl py-3 px-3 md:py-2"
+			animate={{color}}
+			transition={{duration: 0.3, ease:easeInOut}}
+			className="relative z-10 block cursor-pointer text-xl md:text-2xl font-medium py-2 px-3 md:py-3"
 		>
-			<Link to={path}>{text}</Link>
-		</li>
+			<Link to={path} className="flex justify-center items-center">
+				{children}
+			</Link>
+		</motion.li>
 	);
 }
 
@@ -76,7 +91,7 @@ function Cursor({ position }: { position: Position }) {
 				type: "spring",
 				bounce: 0.5,
 			}}
-			className="absolute z-0 h-10 md:h-9 rounded-full bg-black"
+			className="absolute z-0 h-10 md:h-11 rounded-full bg-[#A855F7]"
 		></motion.li>
 	);
 }

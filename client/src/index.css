@@ -1,1 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
+
 @import 'tailwindcss';
+
+@theme {
+    --font-banner: "Rubik Doodle Shadow", system-ui;
+    --font-primary: "Sour Gummy", sans-serif;
+}
