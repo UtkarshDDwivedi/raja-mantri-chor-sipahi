@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { motion } from "motion/react";
+import { Trash, Check } from "lucide-react";
 
 export default function JoinRoom() {
 	const CODE_LENGTH = 5;
@@ -13,7 +14,8 @@ export default function JoinRoom() {
 		newCode[index] = value.toUpperCase();
 		setCode(newCode);
 
-		if (value && index < CODE_LENGTH - 1) inputsRef.current[index + 1]?.focus();
+		if (value && index < CODE_LENGTH - 1)
+			inputsRef.current[index + 1]?.focus();
 	}
 
 	function handleKeyDown(
@@ -37,17 +39,34 @@ export default function JoinRoom() {
 		}
 	}
 
-	function handlePaste(e: React.ClipboardEvent<HTMLInputElement>) {
-		e.preventDefault();
-
-		const data = e.clipboardData.getData("text").toUpperCase();
-		
+	function pasteData(data: string) {
 		const newCode = Array(CODE_LENGTH).fill("");
-		for (let i = 0; i < CODE_LENGTH; i++) if(data[i]) newCode[i] = data[i];
+		for (let i = 0; i < CODE_LENGTH; i++) if (data[i]) newCode[i] = data[i];
 		setCode(newCode);
 
 		const nextIndex = Math.min(data.length, CODE_LENGTH - 1);
 		inputsRef.current[nextIndex]?.focus();
+	}
+
+	function handlePaste(e: React.ClipboardEvent<HTMLInputElement>) {
+		e.preventDefault();
+
+		const data = e.clipboardData.getData("text").toUpperCase();
+
+		pasteData(data);
+	}
+
+	const [cleared, setCleared] = useState(false);
+
+	async function handleClear() {
+		const newCode = Array(CODE_LENGTH).fill("");
+		setCode(newCode);
+		inputsRef.current[0]?.focus();
+
+		setCleared(true);
+		setTimeout(() => {
+			setCleared(false);
+		}, 1500);
 	}
 
 	function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
@@ -60,7 +79,10 @@ export default function JoinRoom() {
 	return (
 		<div className="w-75 h-45 p-3 md:p-5 rounded-2xl md:w-120 md:h-65 md:rounded-3xl bg-[#4eafff] flex flex-col gap-3 md:gap-4 items-center shadow-[-5px_5px_0px_0px_black] md:shadow-[-8px_8px_0px_0px_black]">
 			<h2>Can you find the CHOR?</h2>
-			<form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-4 md:gap-6 items-center justify-center">
+			<form
+				onSubmit={(e) => handleSubmit(e)}
+				className="flex flex-col gap-4 md:gap-6 items-center justify-center"
+			>
 				<div className="flex gap-2 md:gap-4">
 					{code.map((digit, index) => (
 						<input
@@ -79,13 +101,23 @@ export default function JoinRoom() {
 						/>
 					))}
 				</div>
-				<motion.button
-					type="submit"
-					whileTap={{scale: 0.97}}
-					className="p-2 md:p-4 w-fit rounded-2xl bg-[#f9ce57] cursor-pointer"
-				>
-					Join Room
-				</motion.button>
+				<div className="flex justify-center items-center gap-2 md:gap-4">
+					<motion.button
+						type="submit"
+						whileTap={{ scale: 0.97 }}
+						className="p-2 md:p-4 w-fit rounded-2xl bg-[#f9ce57] cursor-pointer"
+					>
+						Join Room
+					</motion.button>
+					<motion.button
+						type="button"
+						whileTap={{ scale: 0.97 }}
+						className="flex justify-center items-center p-2 md:p-4 w-fit rounded-2xl bg-[#f9ce57] cursor-pointer"
+						onClick={handleClear}
+					>
+						{cleared ? <Check /> : <Trash />}
+					</motion.button>
+				</div>
 			</form>
 		</div>
 	);
