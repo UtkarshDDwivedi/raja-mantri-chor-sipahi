@@ -1,11 +1,27 @@
 import { motion } from "motion/react";
 import { Copy, Check } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function CreateRoom() {
-    const [copied, setCopied] = useState(false);
+import socket from "../services/socket";
 
-	const code: string = "-----";
+export default function CreateRoom({ userName }: { userName: string }) {
+	const [loading, setLoading] = useState(false);
+	const [copied, setCopied] = useState(false);
+
+	const [code, setCode] = useState("-----");
+
+	useEffect(() => {
+		function handleRoomCreated(roomCode: string) {
+			setCode(roomCode);
+			setLoading(false);
+		}
+
+		socket.on("room_created", handleRoomCreated);
+
+		return () => {
+			socket.off("room_created", handleRoomCreated);
+		};
+	}, []);
 
 	async function handleCopy() {
 		try {
@@ -39,6 +55,14 @@ export default function CreateRoom() {
 		document.body.removeChild(textArea);
 	}
 
+	function handleCreateRoom() {
+		if (loading) return;
+
+		setLoading(true);
+		if (!socket.connected) socket.connect();
+		socket.emit("create_room", userName);
+	}
+
 	return (
 		<div className="w-75 h-45 p-3 md:p-5 rounded-2xl md:w-120 md:h-65 md:rounded-3xl bg-[#f9ce57] flex flex-col gap-3 md:gap-4 items-center shadow-[-5px_5px_0px_0px_black] md:shadow-[-8px_8px_0px_0px_black]">
 			<h2>Host the Game</h2>
@@ -57,8 +81,9 @@ export default function CreateRoom() {
 					<motion.button
 						whileTap={{ scale: 0.97 }}
 						className="p-2 md:p-4 w-fit rounded-2xl bg-[#4eafff] cursor-pointer"
+						onClick={handleCreateRoom}
 					>
-						Create Room
+						{loading ? "Creating..." : "Create Room"}
 					</motion.button>
 					<motion.button
 						whileTap={{ scale: 0.97 }}
