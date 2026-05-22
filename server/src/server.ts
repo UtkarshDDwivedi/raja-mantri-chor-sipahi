@@ -5,7 +5,7 @@ import { createServer } from "node:http";
 import { Server } from "socket.io";
 import cors from "cors";
 
-import { createRoom, joinRoom } from "./rooms.ts";
+import { createRoom, joinRoom, removePlayer } from "./rooms.ts";
 
 const PORT = process.env.PORT;
 const CLIENT_URL = process.env.CLIENT_URL;
@@ -31,6 +31,8 @@ io.on("connection", (socket) => {
 		socket.emit("room_created", roomCode);
 
 		socket.join(roomCode);
+
+		socket.data.roomCode = roomCode;
 	});
 
 	socket.on(
@@ -48,6 +50,7 @@ io.on("connection", (socket) => {
 			});
 			if (result.success) {
 				socket.join(roomCode);
+				socket.data.roomCode = roomCode;
 				socket.emit("join_success", roomCode);
 				io.to(roomCode).emit("player_joined", playerName);
 				return;
@@ -55,6 +58,13 @@ io.on("connection", (socket) => {
 			socket.emit("join_error", result.message);
 		},
 	);
+
+	socket.on("disconnect", () => {
+		const roomCode = socket.data.roomCode;
+		if (!roomCode) return;
+
+		removePlayer(socket.id, roomCode);
+	});
 });
 
 server.listen(PORT, () => {

@@ -41,3 +41,14 @@ export function joinRoom(roomCode: string, player: Player) {
 		message: "player joined",
 	};
 }
+
+export function removePlayer(socketId: string, roomCode: string) {
+	const room = rooms[roomCode];
+	if (!room) return;
+
+	room.players = room.players.filter((player) => player.id !== socketId);
+
+	if (room.players.length === 0) {
+		delete rooms[roomCode];
+	}
+}
