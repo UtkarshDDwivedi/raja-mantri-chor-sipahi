@@ -23,7 +23,7 @@ export default function Navbar() {
 
 	return (
 		<nav className="relative min-w-screen flex justify-center p-4 font-primary">
-			<ul className="flex justify-center items-center rounded-full border-3 w-fit bg-[#FFF7E8] px-1">
+			<ul className="flex justify-center items-center rounded-full border-3 w-fit bg-[#FFF7E8] px-1 shadow-[-4px_4px_0px_0px_#9333ea]">
 				<Tab setPosition={setPosition} path="/">
 					Home
 				</Tab>

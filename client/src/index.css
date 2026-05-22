@@ -7,3 +7,9 @@
     --font-banner: "Rubik Doodle Shadow", system-ui;
     --font-primary: "Sour Gummy", sans-serif;
 }
+
+body {
+    background: #f8f5ef;
+    background-image: url('./assets/bg.jpg');
+    background-size: contain;
+}
