@@ -1,13 +1,11 @@
-import Navbar from "./components/Navbar";
-import Banner from "./assets/banner.svg?react";
-import UserName from "./components/UserName";
+import { useState } from "react";
 
 import { Routes, Route } from "react-router-dom";
-
+import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import HowToPlay from "./pages/HowToPlay";
+import Room from "./pages/Room";
 
-import { useState } from "react";
 import {
 	uniqueNamesGenerator,
 	animals,
@@ -23,17 +21,18 @@ function App() {
 	);
 
 	return (
-		<div className="min-h-screen flex flex-col justify-center items-center">
-			<Navbar />
-			<Banner className="md:h-65" />
-
-			<UserName userName={userName} setUserName={setUserName} />
-
-			<Routes>
+		<Routes>
+			<Route
+				element={
+					<MainLayout userName={userName} setUserName={setUserName} />
+				}
+			>
 				<Route path="/" element={<Home userName={userName} />} />
 				<Route path="/how-to-play" element={<HowToPlay />} />
-			</Routes>
-		</div>
+			</Route>
+
+			<Route path="/room/:roomCode" element={<Room />} />
+		</Routes>
 	);
 }
 

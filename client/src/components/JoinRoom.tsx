@@ -1,8 +1,41 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { Trash, Check } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-export default function JoinRoom() {
+import socket from "../services/socket";
+
+export default function JoinRoom({ userName }: { userName: string }) {
+	const navigate = useNavigate();
+	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		function handleRoomJoined(roomCode: string) {
+			setLoading(false);
+			navigate(`/room/${roomCode}`);
+		}
+
+		socket.on("join_success", handleRoomJoined);
+
+		return () => {
+			socket.off("join_success", handleRoomJoined);
+		};
+	}, [navigate]);
+
+	useEffect(() => {
+		function handleJoinError(message: string) {
+			setLoading(false);
+
+			alert(message);
+		}
+
+		socket.on("join_error", handleJoinError);
+
+		return () => {
+			socket.off("join_error", handleJoinError);
+		};
+	}, []);
+
 	const CODE_LENGTH = 5;
 
 	const [code, setCode] = useState(Array(CODE_LENGTH).fill(""));
@@ -58,7 +91,7 @@ export default function JoinRoom() {
 
 	const [cleared, setCleared] = useState(false);
 
-	async function handleClear() {
+	function handleClear() {
 		const newCode = Array(CODE_LENGTH).fill("");
 		setCode(newCode);
 		inputsRef.current[0]?.focus();
@@ -72,8 +105,13 @@ export default function JoinRoom() {
 	function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
 		e.preventDefault();
 
+		if (loading) return;
+
+		setLoading(true);
+		if (!socket.connected) socket.connect();
+
 		const roomCode = code.join("");
-		console.log("Room Code: ", roomCode);
+		socket.emit("join_room", { roomCode, userName });
 	}
 
 	return (
@@ -107,7 +145,7 @@ export default function JoinRoom() {
 						whileTap={{ scale: 0.97 }}
 						className="p-2 md:p-4 w-fit rounded-2xl bg-[#f9ce57] cursor-pointer"
 					>
-						Join Room
+						{loading ? "Joining..." : "Join Room"}
 					</motion.button>
 					<motion.button
 						type="button"

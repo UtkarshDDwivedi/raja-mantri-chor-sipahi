@@ -3,6 +3,7 @@ import { Copy, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import socket from "../services/socket";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateRoom({ userName }: { userName: string }) {
 	const [loading, setLoading] = useState(false);
@@ -10,10 +11,14 @@ export default function CreateRoom({ userName }: { userName: string }) {
 
 	const [code, setCode] = useState("-----");
 
+	const navigate = useNavigate();
+
 	useEffect(() => {
 		function handleRoomCreated(roomCode: string) {
 			setCode(roomCode);
 			setLoading(false);
+
+			navigate(`/room/${roomCode}`);
 		}
 
 		socket.on("room_created", handleRoomCreated);
@@ -21,7 +26,7 @@ export default function CreateRoom({ userName }: { userName: string }) {
 		return () => {
 			socket.off("room_created", handleRoomCreated);
 		};
-	}, []);
+	}, [navigate]);
 
 	async function handleCopy() {
 		try {
