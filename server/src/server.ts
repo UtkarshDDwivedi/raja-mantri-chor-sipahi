@@ -5,7 +5,7 @@ import { createServer } from "node:http";
 import { Server } from "socket.io";
 import cors from "cors";
 
-import { createRoom, joinRoom, removePlayer, getRoom } from "./rooms.ts";
+import { createRoom, joinRoom, removePlayer, getRoom } from "./rooms.js";
 
 const PORT = process.env.PORT;
 const CLIENT_URL = process.env.CLIENT_URL;

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import type { Room } from "../../../shared/types.ts";
+import type { Room } from "../types.ts";
 import socket from "../services/socket";
 
 import HostControls from "../components/HostControls.tsx";

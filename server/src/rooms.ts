@@ -1,5 +1,5 @@
 import { customAlphabet } from "nanoid";
-import type { Player, Room } from "../../shared/types.ts";
+import type { Player, Room } from "./types.js";
 
 const rooms: Record<string, Room> = {};
 
