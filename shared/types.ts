@@ -5,5 +5,5 @@ export type Player = {
 
 export type Room = {
 	players: Player[];
-	timeout?: NodeJS.Timeout;
+	hostId: string;
 };

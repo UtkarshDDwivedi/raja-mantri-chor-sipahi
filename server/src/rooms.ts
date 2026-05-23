@@ -1,5 +1,5 @@
 import { customAlphabet } from "nanoid";
-import type { Player, Room } from "./types.ts";
+import type { Player, Room } from "../../shared/types.ts";
 
 const rooms: Record<string, Room> = {};
 
@@ -14,7 +14,7 @@ export function createRoom(player: Player) {
 		roomCode = generateRoomCode();
 	} while (rooms[roomCode]);
 
-	rooms[roomCode] = { players: [player] };
+	rooms[roomCode] = { players: [player], hostId: player.id };
 
 	console.log(rooms);
 	return roomCode;
@@ -51,4 +51,8 @@ export function removePlayer(socketId: string, roomCode: string) {
 	if (room.players.length === 0) {
 		delete rooms[roomCode];
 	}
+}
+
+export function getRoom(roomCode: string) {
+	return rooms[roomCode];
 }

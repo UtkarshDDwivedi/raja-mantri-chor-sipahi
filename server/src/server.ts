@@ -5,7 +5,7 @@ import { createServer } from "node:http";
 import { Server } from "socket.io";
 import cors from "cors";
 
-import { createRoom, joinRoom, removePlayer } from "./rooms.ts";
+import { createRoom, joinRoom, removePlayer, getRoom } from "./rooms.ts";
 
 const PORT = process.env.PORT;
 const CLIENT_URL = process.env.CLIENT_URL;
@@ -65,6 +65,11 @@ io.on("connection", (socket) => {
 
 		removePlayer(socket.id, roomCode);
 	});
+
+	socket.on("get_room", (roomCode: string) => {
+		const room = getRoom(roomCode);
+		socket.emit("room_data", room);
+	})
 });
 
 server.listen(PORT, () => {
