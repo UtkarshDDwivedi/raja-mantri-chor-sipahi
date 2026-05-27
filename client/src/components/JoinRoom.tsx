@@ -111,11 +111,11 @@ export default function JoinRoom({ userName }: { userName: string }) {
 		if (!socket.connected) socket.connect();
 
 		const roomCode = code.join("");
-		socket.emit("join_room", { roomCode, userName });
+		socket.emit("join_room", { roomCode: roomCode, playerName: userName });
 	}
 
 	return (
-		<div className="w-75 h-45 p-3 md:p-5 rounded-2xl md:w-120 md:h-65 md:rounded-3xl bg-[#4eafff] flex flex-col gap-3 md:gap-4 items-center shadow-[-5px_5px_0px_0px_black] md:shadow-[-8px_8px_0px_0px_black]">
+		<div className="w-75 h-45 p-3 md:p-5 rounded-2xl md:w-120 md:h-65 md:rounded-3xl bg-blue flex flex-col gap-3 md:gap-4 items-center shadow-[-5px_5px_0px_0px_black] md:shadow-[-8px_8px_0px_0px_black]">
 			<h2>Can you find the CHOR?</h2>
 			<form
 				onSubmit={(e) => handleSubmit(e)}
@@ -135,7 +135,7 @@ export default function JoinRoom({ userName }: { userName: string }) {
 							onKeyDown={(e) => handleKeyDown(e, index)}
 							onPaste={handlePaste}
 							maxLength={1}
-							className="text-center h-10 w-10 md:h-14 md:w-14 rounded-lg bg-[#fff7eb] text-black shadow-[-4px_4px_0_0_black] md:shadow-[-6px_6px_0_0_black]"
+							className="text-center h-10 w-10 md:h-14 md:w-14 rounded-lg bg-cream text-black shadow-[-4px_4px_0_0_black] md:shadow-[-6px_6px_0_0_black]"
 						/>
 					))}
 				</div>
@@ -143,14 +143,14 @@ export default function JoinRoom({ userName }: { userName: string }) {
 					<motion.button
 						type="submit"
 						whileTap={{ scale: 0.97 }}
-						className="p-2 md:p-4 w-fit rounded-2xl bg-[#f9ce57] cursor-pointer"
+						className="p-2 md:p-4 w-fit rounded-2xl bg-yellow cursor-pointer"
 					>
 						{loading ? "Joining..." : "Join Room"}
 					</motion.button>
 					<motion.button
 						type="button"
 						whileTap={{ scale: 0.97 }}
-						className="flex justify-center items-center p-2 md:p-4 w-fit rounded-2xl bg-[#f9ce57] cursor-pointer"
+						className="flex justify-center items-center p-2 md:p-4 w-fit rounded-2xl bg-yellow cursor-pointer"
 						onClick={handleClear}
 					>
 						{cleared ? <Check /> : <Trash />}

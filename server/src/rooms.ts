@@ -1,7 +1,7 @@
 import { customAlphabet } from "nanoid";
 import type { Player, Room } from "./types.js";
 
-const rooms: Record<string, Room> = {};
+export const rooms: Record<string, Room> = {};
 
 const generateRoomCode = customAlphabet(
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
@@ -14,9 +14,8 @@ export function createRoom(player: Player) {
 		roomCode = generateRoomCode();
 	} while (rooms[roomCode]);
 
-	rooms[roomCode] = { players: [player], hostId: player.id };
+	rooms[roomCode] = { players: [player], hostId: player.id, messages: []};
 
-	console.log(rooms);
 	return roomCode;
 }
 

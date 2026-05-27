@@ -1,11 +1,12 @@
 import "dotenv/config";
 
-import express from "express";
+import express, { Router } from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import cors from "cors";
 
 import { createRoom, joinRoom, removePlayer, getRoom } from "./rooms.js";
+import type { Message } from "./types.js";
 
 const PORT = process.env.PORT;
 const CLIENT_URL = process.env.CLIENT_URL;
@@ -33,6 +34,7 @@ io.on("connection", (socket) => {
 		socket.join(roomCode);
 
 		socket.data.roomCode = roomCode;
+		socket.data.playerName = playerName;
 	});
 
 	socket.on(
@@ -51,6 +53,7 @@ io.on("connection", (socket) => {
 			if (result.success) {
 				socket.join(roomCode);
 				socket.data.roomCode = roomCode;
+				socket.data.playerName = playerName;
 				socket.emit("join_success", roomCode);
 				io.to(roomCode).emit("player_joined", playerName);
 				return;
@@ -69,7 +72,26 @@ io.on("connection", (socket) => {
 	socket.on("get_room", (roomCode: string) => {
 		const room = getRoom(roomCode);
 		socket.emit("room_data", room);
+	});
+
+	socket.on("get_messages", () => {
+		const roomCode = socket.data.roomCode;
+		const room = getRoom(roomCode);
+		socket.emit("message_data", room?.messages);
 	})
+
+	socket.on("send_message", (message: string) => {
+		const newMessage: Message = {
+			senderId: socket.id,
+			senderName: socket.data.playerName,
+			text: message,
+		};
+
+		const roomCode = socket.data.roomCode;
+		const room = getRoom(roomCode);
+		room?.messages.push(newMessage);
+		io.to(roomCode).emit("received_message", newMessage);
+	});
 });
 
 server.listen(PORT, () => {

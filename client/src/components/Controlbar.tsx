@@ -73,7 +73,7 @@ export default function Controlbar({
 	}
 
 	return (
-		<div className="flex justify-center items-center gap-34 text-2xl p-2 border-3 rounded-xl bg-[#fff7eb] shadow-[-4px_4px_0px_0px_#9333ea] mb-4">
+		<div className="flex justify-center items-center gap-37 text-2xl p-2 border-3 rounded-xl bg-cream shadow-[-4px_4px_0px_0px_#9333ea] mb-4">
 			<div className="flex justify-center items-center gap-4">
 				<h2>{roomCode}</h2>
 				<motion.button

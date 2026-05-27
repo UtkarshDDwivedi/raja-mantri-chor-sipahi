@@ -6,6 +6,11 @@
 @theme {
     --font-banner: "Rubik Doodle Shadow", system-ui;
     --font-primary: "Sour Gummy", sans-serif;
+    --color-yellow: #f9ce57;
+    --color-blue: #4eafff;
+    --color-purple: #9333ea;
+    --color-pink: #ff36f9;
+    --color-cream: #fff7eb;
 }
 
 body {

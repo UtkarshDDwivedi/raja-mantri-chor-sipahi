@@ -27,14 +27,14 @@ export default function UserName({ userName, setUserName }: UserInput) {
 				value={userName}
 				onChange={(e) => setUserName(e.target.value)}
 				maxLength={32}
-				className="w-50 h-10 md:w-75 md:h-14 md:text-2xl rounded-lg border-3 shadow-[-4px_4px_0px_0px_#9333ea] bg-[#fff7e8] text-center font-primary"
+				className="w-50 h-10 md:w-75 md:h-14 md:text-2xl rounded-lg border-3 shadow-[-4px_4px_0px_0px_#9333ea] bg-cream text-center font-primary"
 			/>
 			<motion.div
 				whileTap={{ scale: 0.97 }}
-				className="w-10 h-10 md:w-12 md:h-12 flex justify-center items-center rounded-lg bg-[#9333ea] shadow-[-4px_4px_0px_0px_black] cursor-pointer"
+				className="w-10 h-10 md:w-12 md:h-12 flex justify-center items-center rounded-lg bg-purple shadow-[-4px_4px_0px_0px_black] cursor-pointer"
 				onClick={handleShuffle}
 			>
-				<Shuffle size={26} color="#fff7e8" />
+				<Shuffle size={26} color="#fff7eb" />
 			</motion.div>
 		</div>
 	);
