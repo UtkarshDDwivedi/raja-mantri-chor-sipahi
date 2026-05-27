@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import socket from "../services/socket";
 import type { Message } from "../types";
 
 export default function ChatPanel() {
 	const [messages, setMessages] = useState<Message[]>([]);
+
+	const messageEndRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	}, [messages]);
 
 	useEffect(() => {
 		if (!socket.connected) socket.connect();
@@ -27,12 +32,19 @@ export default function ChatPanel() {
 	}, []);
 
 	return (
-		<div className="flex flex-col min-h-[35vh] w-[50vw] md:min-h-[38vh] md:w-[25vw] bg-pink rounded-xl shadow-[-6px_6px_0_0_#9333ea] p-1 px-3 text-cream">
+		<div className="flex flex-col h-[35vh] overflow-y-auto w-[50vw] md:h-[38vh] md:w-[25vw] bg-pink rounded-xl shadow-[-6px_6px_0_0_#9333ea] p-1 px-3 text-cream no-scrollbar">
 			{messages.map((message, index) => (
-				<div key={index}>
-					<span className={`${socket.id === message.senderId ? 'text-green-400' : 'text-gray-600'}`}>{message.senderName}: </span> {message.text}
+				<div key={index} className="wrap-break-word">
+					<span
+						className={`${socket.id === message.senderId ? "text-green-400" : "text-gray-600"}`}
+					>
+						{message.senderName}:{" "}
+					</span>{" "}
+					{message.text}
 				</div>
 			))}
+
+			<div ref={messageEndRef}></div>
 		</div>
 	);
 }
