@@ -1,9 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-
 import socket from "../services/socket";
 import type { Message } from "../types";
 
-export default function ChatPanel() {
+type ChatPanelProps = {
+	activePanel: "chat" | "player";
+	setActivePanel: (panel: "chat" | "player") => void;
+};
+
+export default function ChatPanel({
+	activePanel,
+	setActivePanel,
+}: ChatPanelProps) {
 	const [messages, setMessages] = useState<Message[]>([]);
 
 	const messageEndRef = useRef<HTMLDivElement>(null);
@@ -31,20 +38,43 @@ export default function ChatPanel() {
 		};
 	}, []);
 
-	return (
-		<div className="flex flex-col h-[35vh] overflow-y-auto w-[50vw] md:h-[38vh] md:w-[25vw] bg-pink rounded-xl shadow-[-6px_6px_0_0_#9333ea] p-1 px-3 text-cream no-scrollbar">
-			{messages.map((message, index) => (
-				<div key={index} className="wrap-break-word">
-					<span
-						className={`${socket.id === message.senderId ? "text-green-400" : "text-gray-600"}`}
-					>
-						{message.senderName}:{" "}
-					</span>{" "}
-					{message.text}
-				</div>
-			))}
+	// return (
+	// 	<div className="flex flex-col h-[35vh] overflow-y-auto w-[70vw] md:h-[38vh] md:w-[25vw] bg-pink rounded-xl shadow-[-6px_6px_0_0_#9333ea] p-1 px-3 text-cream no-scrollbar">
+	// 		{messages.map((message, index) => (
+	// 			<div key={index} className="wrap-break-word">
+	// 				<span
+	// 					className={`${socket.id === message.senderId ? "text-green-400" : "text-gray-600"}`}
+	// 				>
+	// 					{message.senderName}:{" "}
+	// 				</span>{" "}
+	// 				{message.text}
+	// 			</div>
+	// 		))}
 
-			<div ref={messageEndRef}></div>
+	// 		<div ref={messageEndRef}></div>
+	// 	</div>
+	// );
+
+	return (
+		<div
+			onClick={() => setActivePanel("chat")}
+			className={`min-w-0 min-h-0 flex flex-col bg-pink rounded-xl shadow-[-6px_6px_0_0_#9333ea] p-1 px-3 text-cream transition-all duration-300 ease-in-out cursor-pointer
+            ${activePanel === "chat" ? "flex-3" : "flex-1"} 
+            md:flex-1 md:w-full md:h-full`}
+		>
+			<div className="flex-1 overflow-y-auto no-scrollbar">
+				{messages.map((message, index) => (
+					<div key={index} className="wrap-break-word">
+						<span
+							className={`${socket.id === message.senderId ? "text-green-400" : "text-gray-600"}`}
+						>
+							{message.senderName}:{" "}
+						</span>{" "}
+						{message.text}
+					</div>
+				))}
+				<div ref={messageEndRef}></div>
+			</div>
 		</div>
 	);
 }
