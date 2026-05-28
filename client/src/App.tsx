@@ -40,7 +40,7 @@ function App() {
 				<Route path="/how-to-play" element={<HowToPlay />} />
 			</Route>
 
-			<Route path="/room/:roomCode" element={<Room />} />
+			<Route path="/room/:roomCode" element={<Room userName={userName}/>} />
 		</Routes>
 	);
 }

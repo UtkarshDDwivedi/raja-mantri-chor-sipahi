@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { Room } from "../types.ts";
 import socket from "../services/socket";
@@ -10,29 +10,53 @@ import ChatPanel from "../components/ChatPanel.tsx";
 
 import { motion } from "motion/react";
 
-export default function Room() {
+export default function Room({ userName }: { userName: string }) {
 	const [message, setMessage] = useState("");
 	const [activePanel, setActivePanel] = useState<"chat" | "player">("chat");
 
 	const { roomCode } = useParams();
 	const [room, setRoom] = useState<Room | null>(null);
+	const navigate = useNavigate();
+	const [isJoining, setIsJoining] = useState(true);
 
 	useEffect(() => {
-		if (!roomCode) return;
+		if (!roomCode || !userName) return;
 		if (!socket.connected) socket.connect();
+
+		socket.emit("join_room", { roomCode, playerName: userName });
+
+		function handleJoinSuccess() {
+			setIsJoining(false);
+			socket.emit("get_room", roomCode);
+		}
+
+		function handleJoinError(errorMessage: string) {
+			alert(errorMessage);
+			navigate("/");
+		}
 
 		function handleRoomData(data: Room) {
 			setRoom(data);
 		}
-		socket.emit("get_room", roomCode);
+
+		socket.on("join_success", handleJoinSuccess);
+		socket.on("join_error", handleJoinError);
 		socket.on("room_data", handleRoomData);
 
 		return () => {
+			socket.off("join_success", handleJoinSuccess);
+			socket.off("join_error", handleJoinError);
 			socket.off("room_data", handleRoomData);
 		};
-	}, [roomCode]);
+	}, [roomCode, userName, navigate]);
 
-	if (!room) return <div className="min-h-screen">Loading...</div>;
+	if (isJoining || !room) {
+		return (
+			<div className="h-dvh flex items-center justify-center font-primary text-cream text-2xl font-bold">
+				Joining Room...
+			</div>
+		);
+	}
 
 	function handleChat(e: React.SubmitEvent<HTMLFormElement>) {
 		e.preventDefault();

@@ -50,7 +50,7 @@ export default function Controlbar({
 				if (navigator.share) {
 					await navigator.share({
 						title: "Join my Raja Mantri Chor Sipahi Game!",
-						text: `Join my Raja Mantri Chor Sipahi Game.\nRoom Code: ${roomCode}`,
+						text: `Join my Raja Mantri Chor Sipahi Game.\nRoom Code: ${roomCode}\n`,
 						url: window.location.href,
 					});
 
