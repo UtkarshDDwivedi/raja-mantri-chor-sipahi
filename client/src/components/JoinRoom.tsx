@@ -1,40 +1,37 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import { Trash, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import socket from "../services/socket";
-
-export default function JoinRoom({ userName }: { userName: string }) {
+export default function JoinRoom() {
 	const navigate = useNavigate();
-	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		function handleRoomJoined(roomCode: string) {
-			setLoading(false);
-			navigate(`/room/${roomCode}`);
-		}
+	// useEffect(() => {
+	// 	function handleRoomJoined(roomCode: string) {
+	// 		setLoading(false);
+	// 		navigate(`/room/${roomCode}`);
+	// 	}
 
-		socket.on("join_success", handleRoomJoined);
+	// 	socket.on("join_success", handleRoomJoined);
 
-		return () => {
-			socket.off("join_success", handleRoomJoined);
-		};
-	}, [navigate]);
+	// 	return () => {
+	// 		socket.off("join_success", handleRoomJoined);
+	// 	};
+	// }, [navigate]);
 
-	useEffect(() => {
-		function handleJoinError(message: string) {
-			setLoading(false);
+	// useEffect(() => {
+	// 	function handleJoinError(message: string) {
+	// 		setLoading(false);
 
-			alert(message);
-		}
+	// 		alert(message);
+	// 	}
 
-		socket.on("join_error", handleJoinError);
+	// 	socket.on("join_error", handleJoinError);
 
-		return () => {
-			socket.off("join_error", handleJoinError);
-		};
-	}, []);
+	// 	return () => {
+	// 		socket.off("join_error", handleJoinError);
+	// 	};
+	// }, []);
 
 	const CODE_LENGTH = 5;
 
@@ -102,16 +99,11 @@ export default function JoinRoom({ userName }: { userName: string }) {
 		}, 1500);
 	}
 
-	function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+	function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 
-		if (loading) return;
-
-		setLoading(true);
-		if (!socket.connected) socket.connect();
-
 		const roomCode = code.join("");
-		socket.emit("join_room", { roomCode: roomCode, playerName: userName });
+		navigate(`/room/${roomCode}`);
 	}
 
 	return (
@@ -145,7 +137,7 @@ export default function JoinRoom({ userName }: { userName: string }) {
 						whileTap={{ scale: 0.97 }}
 						className="p-2 md:p-4 w-fit rounded-2xl bg-yellow cursor-pointer"
 					>
-						{loading ? "Joining..." : "Join Room"}
+						Join Room
 					</motion.button>
 					<motion.button
 						type="button"

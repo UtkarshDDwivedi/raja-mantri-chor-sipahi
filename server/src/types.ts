@@ -1,6 +1,9 @@
 export type Player = {
     id: string,
+    socketId: string,
     name: string,
+    score: number,
+    isOnline: boolean;
 }
 
 export type Message = {

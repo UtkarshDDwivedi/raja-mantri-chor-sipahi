@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import socket from "../services/socket";
 import { useNavigate } from "react-router-dom";
 
-export default function CreateRoom({ userName }: { userName: string }) {
+export default function CreateRoom({ playerID }: { playerID: string }) {
 	const [loading, setLoading] = useState(false);
 	const [copied, setCopied] = useState(false);
 
@@ -65,7 +65,7 @@ export default function CreateRoom({ userName }: { userName: string }) {
 
 		setLoading(true);
 		if (!socket.connected) socket.connect();
-		socket.emit("create_room", userName);
+		socket.emit("create_room", playerID);
 	}
 
 	return (

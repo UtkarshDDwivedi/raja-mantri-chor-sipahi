@@ -10,7 +10,7 @@ import ChatPanel from "../components/ChatPanel.tsx";
 
 import { motion } from "motion/react";
 
-export default function Room({ userName }: { userName: string }) {
+export default function Room({ userName, playerID }: { userName: string, playerID: string }) {
 	const [message, setMessage] = useState("");
 	const [activePanel, setActivePanel] = useState<"chat" | "player">("chat");
 
@@ -23,7 +23,7 @@ export default function Room({ userName }: { userName: string }) {
 		if (!roomCode || !userName) return;
 		if (!socket.connected) socket.connect();
 
-		socket.emit("join_room", { roomCode, playerName: userName });
+		socket.emit("join_room", { roomCode, playerName: userName, playerID });
 
 		function handleJoinSuccess() {
 			setIsJoining(false);
@@ -48,7 +48,7 @@ export default function Room({ userName }: { userName: string }) {
 			socket.off("join_error", handleJoinError);
 			socket.off("room_data", handleRoomData);
 		};
-	}, [roomCode, userName, navigate]);
+	}, [roomCode, userName, navigate, playerID]);
 
 	if (isJoining || !room) {
 		return (

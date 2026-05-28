@@ -13,6 +13,15 @@ import {
 } from "unique-names-generator";
 
 function App() {
+	const [playerID] = useState(() => {
+		const savedID = localStorage.getItem("playerID");
+		if (savedID) return savedID;
+
+		const newID = crypto.randomUUID();
+		localStorage.setItem("playerID", newID);
+		return newID;
+	})
+
 	const [userName, setUserName] = useState(() => {
 		const savedName = localStorage.getItem("playerName");
 		if (savedName) return savedName;
@@ -36,11 +45,11 @@ function App() {
 					<MainLayout userName={userName} setUserName={setUserName} />
 				}
 			>
-				<Route path="/" element={<Home userName={userName} />} />
+				<Route path="/" element={<Home playerID={playerID} />} />
 				<Route path="/how-to-play" element={<HowToPlay />} />
 			</Route>
 
-			<Route path="/room/:roomCode" element={<Room userName={userName}/>} />
+			<Route path="/room/:roomCode" element={<Room userName={userName} playerID={playerID}/>} />
 		</Routes>
 	);
 }
