@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
@@ -13,12 +13,21 @@ import {
 } from "unique-names-generator";
 
 function App() {
-	const [userName, setUserName] = useState(() =>
-		uniqueNamesGenerator({
+	const [userName, setUserName] = useState(() => {
+		const savedName = localStorage.getItem("playerName");
+		if (savedName) return savedName;
+
+		const randomName = uniqueNamesGenerator({
 			dictionaries: [adjectives, animals],
 			style: "capital",
-		}),
-	);
+		});
+		localStorage.setItem("playerName", randomName);
+		return randomName;
+	});
+
+	useEffect(() => {
+		if (userName) localStorage.setItem("playerName", userName);
+	}, [userName]);
 
 	return (
 		<Routes>

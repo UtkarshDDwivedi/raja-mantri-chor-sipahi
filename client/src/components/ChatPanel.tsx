@@ -38,23 +38,6 @@ export default function ChatPanel({
 		};
 	}, []);
 
-	// return (
-	// 	<div className="flex flex-col h-[35vh] overflow-y-auto w-[70vw] md:h-[38vh] md:w-[25vw] bg-pink rounded-xl shadow-[-6px_6px_0_0_#9333ea] p-1 px-3 text-cream no-scrollbar">
-	// 		{messages.map((message, index) => (
-	// 			<div key={index} className="wrap-break-word">
-	// 				<span
-	// 					className={`${socket.id === message.senderId ? "text-green-400" : "text-gray-600"}`}
-	// 				>
-	// 					{message.senderName}:{" "}
-	// 				</span>{" "}
-	// 				{message.text}
-	// 			</div>
-	// 		))}
-
-	// 		<div ref={messageEndRef}></div>
-	// 	</div>
-	// );
-
 	return (
 		<div
 			onClick={() => setActivePanel("chat")}
