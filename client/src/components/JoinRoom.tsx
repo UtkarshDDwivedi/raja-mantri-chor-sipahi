@@ -2,36 +2,10 @@ import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import { Trash, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function JoinRoom() {
 	const navigate = useNavigate();
-
-	// useEffect(() => {
-	// 	function handleRoomJoined(roomCode: string) {
-	// 		setLoading(false);
-	// 		navigate(`/room/${roomCode}`);
-	// 	}
-
-	// 	socket.on("join_success", handleRoomJoined);
-
-	// 	return () => {
-	// 		socket.off("join_success", handleRoomJoined);
-	// 	};
-	// }, [navigate]);
-
-	// useEffect(() => {
-	// 	function handleJoinError(message: string) {
-	// 		setLoading(false);
-
-	// 		alert(message);
-	// 	}
-
-	// 	socket.on("join_error", handleJoinError);
-
-	// 	return () => {
-	// 		socket.off("join_error", handleJoinError);
-	// 	};
-	// }, []);
 
 	const CODE_LENGTH = 5;
 
@@ -103,6 +77,10 @@ export default function JoinRoom() {
 		e.preventDefault();
 
 		const roomCode = code.join("");
+		if (roomCode.length !== CODE_LENGTH) {
+			toast.error("Invalid Room Code!");
+			return;
+		}
 		navigate(`/room/${roomCode}`);
 	}
 

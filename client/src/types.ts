@@ -1,6 +1,9 @@
 export type Player = {
     id: string,
+    socketId: string,
     name: string,
+    score: number,
+    isOnline: boolean;
 }
 
 export type Message = {
@@ -13,4 +16,5 @@ export type Room = {
 	players: Player[];
 	hostId: string;
     messages: Message[];
+    bannedIDs: string[]; 
 };

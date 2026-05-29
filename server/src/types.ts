@@ -16,4 +16,5 @@ export type Room = {
 	players: Player[];
 	hostId: string;
     messages: Message[];
+    bannedIDs: string[]; 
 };

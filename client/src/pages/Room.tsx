@@ -9,8 +9,15 @@ import PlayerPanel from "../components/PlayerPanel.tsx";
 import ChatPanel from "../components/ChatPanel.tsx";
 
 import { motion } from "motion/react";
+import { toast } from "sonner";
 
-export default function Room({ userName, playerID }: { userName: string, playerID: string }) {
+export default function Room({
+	userName,
+	playerID,
+}: {
+	userName: string;
+	playerID: string;
+}) {
 	const [message, setMessage] = useState("");
 	const [activePanel, setActivePanel] = useState<"chat" | "player">("chat");
 
@@ -31,7 +38,7 @@ export default function Room({ userName, playerID }: { userName: string, playerI
 		}
 
 		function handleJoinError(errorMessage: string) {
-			alert(errorMessage);
+			toast.error(errorMessage, { id: "join-error" });
 			navigate("/");
 		}
 
@@ -39,14 +46,36 @@ export default function Room({ userName, playerID }: { userName: string, playerI
 			setRoom(data);
 		}
 
+		function handleNotification(data: {
+			message: string;
+			type: "success" | "info" | "error";
+		}) {
+			if (data.type === "success") {
+				toast.success(data.message);
+			} else if (data.type === "info") {
+				toast.info(data.message);
+			} else {
+				toast.error(data.message);
+			}
+		}
+
+		function handlePlayerKicked(id: string) {
+			if (id === playerID) {
+				navigate("/");
+			}
+		}
+
 		socket.on("join_success", handleJoinSuccess);
 		socket.on("join_error", handleJoinError);
 		socket.on("room_data", handleRoomData);
+		socket.on("notification", handleNotification);
+		socket.on("player_kicked", handlePlayerKicked);
 
 		return () => {
 			socket.off("join_success", handleJoinSuccess);
 			socket.off("join_error", handleJoinError);
 			socket.off("room_data", handleRoomData);
+			socket.off("notification", handleNotification);
 		};
 	}, [roomCode, userName, navigate, playerID]);
 
@@ -82,6 +111,9 @@ export default function Room({ userName, playerID }: { userName: string, playerI
 						<PlayerPanel
 							activePanel={activePanel}
 							setActivePanel={setActivePanel}
+							playerId={playerID}
+							hostId={room.hostId}
+							players={room.players}
 						/>
 						<ChatPanel
 							activePanel={activePanel}
@@ -94,6 +126,7 @@ export default function Room({ userName, playerID }: { userName: string, playerI
 						className="flex justify-between gap-2 w-full text-cream font-bold shrink-0"
 					>
 						<input
+							id="message-box"
 							type="text"
 							placeholder="Send Message"
 							value={message}

@@ -15,7 +15,12 @@ export function createRoom(hostID: string) {
 		roomCode = generateRoomCode();
 	} while (rooms[roomCode]);
 
-	rooms[roomCode] = { players: [], hostId: hostID, messages: [] };
+	rooms[roomCode] = {
+		players: [],
+		hostId: hostID,
+		messages: [],
+		bannedIDs: [],
+	};
 
 	return roomCode;
 }
@@ -23,11 +28,19 @@ export function createRoom(hostID: string) {
 export function joinRoom(roomCode: string, player: Player) {
 	const room = rooms[roomCode];
 
-	if (!room)
+	if (!room) {
 		return {
 			success: false,
 			message: "room does not exists",
 		};
+	}
+
+	if (room.bannedIDs.includes(player.id)) {
+		return {
+			success: false,
+			message: "you have been banned from this room",
+		};
+	}
 
 	if (roomTimeouts[roomCode]) {
 		clearTimeout(roomTimeouts[roomCode]);
@@ -36,12 +49,22 @@ export function joinRoom(roomCode: string, player: Player) {
 
 	const existingPlayer = room.players.find((p) => p.id === player.id);
 	if (existingPlayer) {
+		const wasOffline = !existingPlayer.isOnline;
+
 		existingPlayer.socketId = player.socketId;
 		existingPlayer.name = player.name;
-		return {
-			success: true,
-			message: "player rejoined",
-		};
+		existingPlayer.isOnline = true;
+		if (wasOffline) {
+			return {
+				success: true,
+				message: "player rejoined",
+			};
+		} else {
+			return {
+				success: true,
+				message: "strict mode",
+			};
+		}
 	}
 
 	if (room.players.length >= 10)
@@ -78,4 +101,19 @@ export function removePlayer(socketId: string, roomCode: string) {
 
 export function getRoom(roomCode: string) {
 	return rooms[roomCode];
+}
+
+export function kickPlayer({
+	roomCode,
+	playerId,
+}: {
+	roomCode: string;
+	playerId: string;
+}) {
+	const room = getRoom(roomCode);
+	if (!room) return;
+
+	room.players = room.players.filter((player) => player.id != playerId);
+
+	room.bannedIDs.push(playerId);
 }
