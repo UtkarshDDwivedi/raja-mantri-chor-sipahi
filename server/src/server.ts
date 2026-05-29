@@ -109,7 +109,7 @@ io.on("connection", (socket) => {
 
 	socket.on("send_message", (message: string) => {
 		const newMessage: Message = {
-			senderId: socket.id,
+			senderId: socket.data.playerId,
 			senderName: socket.data.playerName,
 			text: message,
 		};
